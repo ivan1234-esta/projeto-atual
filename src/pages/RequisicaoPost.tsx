@@ -2,7 +2,6 @@ import { Usuarios } from "../types/usuarios";
 import { ChangeEvent, useState } from "react";
 import { ModuloApi, } from "../api";
  
-
 function RequisicaoPost() {
     const [addNome, setAddNome] = useState('');
     const [addEmail, setAddEmail] = useState('');
