@@ -1,89 +1,107 @@
 import { Usuarios } from "../types/usuarios";
 import { ChangeEvent, useState } from "react";
 import { ModuloApi, } from "../api";
+ 
 
 function RequisicaoPost() {
-    const [addTitulo, setAddTitulo] = useState('');
-    const [addDetalhe, setAddDetalhe] = useState('');
+    const [addNome, setAddNome] = useState('');
+    const [addEmail, setAddEmail] = useState('');
+    const [addTelefone, setAddTelefone] = useState('');
+    const [addSenha, setAddSenha] = useState('');
+    const [addDataNascimento, setAddDataNascimento] = useState('');
+    const [addTipoSanguineo, setAddTipoSanguineo] = useState('');
     const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const HandleChangeTitulo = (e: ChangeEvent<HTMLInputElement>) => {
-        setAddTitulo(e.target.value);
+    const HandleChangeNome = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddNome(e.target.value);
     }
 
-    const HandleChangeDetalhe = (e: ChangeEvent<HTMLInputElement>) => {
-        setAddDetalhe(e.target.value);
+    const HandleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddEmail(e.target.value);
+    }
+
+    const HandleChangeTelefone = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddTelefone(e.target.value);
+    }
+
+    const HandleChangeSenha = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddSenha(e.target.value);
+    }
+
+    const HandleChangeDataNascimento = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddDataNascimento(e.target.value);
+    }
+
+    const HandleChangeTipoSanguineo = (e: ChangeEvent<HTMLSelectElement>) => {
+        setAddTipoSanguineo(e.target.value);
     }
 
     const carregarUsuarios = async () => {
-        setLoading(true);
+         setLoading(true);
         setUsuarios([]);
         const json = await ModuloApi.CarregarUsuarios();
         const dataArray = Array.isArray(json) ? json : [json];
         setLoading(false);
         setUsuarios(dataArray); 
-    }
+     }
 
-    // const AdicionarUsuarios = async () => {
-    //     if(addTitulo && addDetalhe){
-    //         let json = await
-    //         ModuloApi.AdicionarUsuario(addTitulo,addDetalhe, 1);
-    //         if(json.id){
-    //             alert('Usuario adicionado com sucesso!')
-    //             setUsuarios((usuarios) => [...usuarios, json]);
-    //         } else{
-    //             alert('Ocorreu Alguma falha')
-    //         }
-    //     }else{
-    //         alert('Preencha as informações');
-    //     }
-    // }
-
+    const AdicionarUsuarios = async () => {
+        if (addNome && addEmail && addTelefone && addSenha && addDataNascimento && addTipoSanguineo) {
+            const sucesso = await ModuloApi.AdicionarUsuario(
+                addNome, 
+                addEmail, 
+                addTelefone, 
+                addSenha, 
+                addDataNascimento, 
+                addTipoSanguineo
+            );
     
-
+            if (sucesso) {
+                alert('Usuario adicionado com sucesso!');
+            } else {
+                alert('Ocorreu Alguma falha');
+            }
+        } else {
+            alert('Preencha as informações');
+        }
+    }
     return (
-    <div>
-            {/* <h1>Cadastro Doador</h1>
-            <input type="text" onChange={HandleChangeNome} placeholder="Nome Completo" />
-            <br /><br />
-            <input type="email" onChange={HandleChangeEmail} placeholder="Informe seu melhor email" />
-            <br/>
-            <br /><br />
-            <input type="number" onChange={HandleChangeTelefone} placeholder="Informe seu Numero de Contato" />
-            <br/>
-            <br /><br />
-            <input type="password" onChange={HandleChangeSenha} placeholder="Crie sua Senha" />
-            <br/>
-            <br /><br />
-            <input type="date" onChange={HandleChangeDataNascimento} placeholder="Detalhe do Item" />
-            <br/>
-            <br /><br />
-            <input type="text" onChange={HandleChangeTipoSanguineo} placeholder="Detalhe do Item" />
-            <br/>
-            <br/>
-            <button onClick={AdicionarUsuarios}>Criar Cadastro</button>
-
-            {loading && 
-            <div>Carregando Conteudo...</div>
-            }
-            {!loading &&
-              <div>
-                <h1>Consulta de Informações</h1>
-                <button onClick={carregarUsuarios}>Carregar</button>
-              </div>
-            }
-            <h1>Lista de Usuarios</h1>
-            {usuarios.map((item, index) => (
-                <div key={index}>
-                    <h2>Dados do Usuario</h2>
-                    Titulo: {item.title}
-                    <br/>
-                    Identificação: {item.userId}
+            <div className="container">
+              <div className="form-wrapper">
+              <div className="image">
+                  <img src="doador.png" alt="Ilustração Doação" />
                 </div>
-            ))} */}
-        </div>
-    )
+                <div className="form">
+                  <h3 className="tit_cads">Seja Bem-vindo(a)!<br/>Cadastre-se aqui:</h3>
+                  <p className="sub_tit_cads">Digite seus dados para criar sua conta:</p>
+                  <input type="text" onChange={HandleChangeNome} placeholder="Nome Completo" />
+                  <input type="email" onChange={HandleChangeEmail} placeholder="Informe seu melhor email" />
+                  <input type="text" onChange={HandleChangeTelefone} placeholder="Informe seu telefone" />
+                  <input type="password" onChange={HandleChangeSenha} placeholder="Crie sua Senha" />
+                  <div className="date-container">
+                    <span>Data de Nascimento</span>
+                    <input type="date" onChange={HandleChangeDataNascimento} />
+                  </div>
+                  <select onChange={HandleChangeTipoSanguineo} value={addTipoSanguineo}>
+                    <option value="">Selecione o Tipo Sanguíneo</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="não informado">Não Sei</option>
+                  </select>
+                  {loading && <div>Carregando Conteudo...</div>}
+                  {!loading && <button className="btn_form" onClick={AdicionarUsuarios}>Criar Cadastro</button>}
+                </div>
+              </div>
+            </div>
+          );
+          
 }
 
 export default RequisicaoPost;
